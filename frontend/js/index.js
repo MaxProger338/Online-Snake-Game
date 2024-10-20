@@ -22,7 +22,8 @@ function onload()
         if (currentTime - startTime > 100)
         {
             startTime = currentTime;
-            game.moveSnake(state.snake);
+            game.moveSnake(state);
+            game.addNewFood(state);
             game.renderGame(state);
         }
     });
@@ -51,7 +52,7 @@ function onload()
                 return;
         }
 
-        game.moveSnake(state.snake, direction, false);
+        game.moveSnake(state, direction, false);
     });
 }
 

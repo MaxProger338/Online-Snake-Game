@@ -8,11 +8,11 @@ const stateGlobal = {
         ],
         'down'
     ),
-    foods: {
+    food: {
         did: true,
-        coords: {x: 5, y: 5}
+        coords: {}
     },
-    level: 1,
+    level: 2,
     maps: {
         'map1': map1,
         'map2': map2,

@@ -30,15 +30,15 @@ class Game
             throw new TypeError('Invalid argument type');
 
         // Рисуем
-        for (let y = 0; y < this._field.getHeigth() / this._field.getHeigthCell(); y++)
+        for (let y = 0; y < this._field.getAmountCellsOnY(); y++)
         {
-            for (let x = 0; x < this._field.getWidth() / this._field.getWidthCell(); x++)
+            for (let x = 0; x < this._field.getAmountCellsOnX(); x++)
             {
                 // Рисуем фон
                 let color = this._field.getColors().backgroundCellColor;
                 
                 // Рисуем еду
-                if (state.foods.coords.x == x && state.foods.coords.y == y)
+                if (state.food.coords.x == x && state.food.coords.y == y)
                     color = this._field.getColors().foodColor;
                     
                 // Рисуем Змейку
@@ -61,7 +61,7 @@ class Game
     }
 
     // Если змейка переходит за границы, перемещаем её в противоположную сторону
-    setTeleportSnake(snake, newHeadSnake)
+    _setTeleportSnake(snake, newHeadSnake)
     {
         if (
             typeof snake !== 'object' || 
@@ -73,8 +73,8 @@ class Game
         const direction = snake.getDirection();
 
         // Границы игрового поля
-        const rowEdge = this._field.getHeigth() / this._field.getHeigthCell() - 1;
-        const colEdge = this._field.getWidth()  / this._field.getWidthCell()- 1;
+        const rowEdge = this._field.getAmountCellsOnY() - 1;
+        const colEdge = this._field.getAmountCellsOnX() - 1;
 
         // Если змейка переходит за границы, то перемещаем её в противоположную сторону
         if (newHeadSnake.y < 0       && direction == 'up')
@@ -94,7 +94,7 @@ class Game
     }
 
     // Проверка на самопересечение
-    isSelfIntersection(snake, direction)
+    _isSelfIntersection(snake, direction)
     {
         if (
             typeof snake !== 'object' || 
@@ -122,12 +122,14 @@ class Game
     }
 
     // Перемещаем змейку
-    moveSnake(snake, direction=snake.getDirection(), moveSnake = true,teleport = true, selfIntersection = true)
+    moveSnake(state, direction=state.snake.getDirection(), moveSnake = true,teleport = true, selfIntersection = true)
     {
+        let snake = state.snake;
+
         // Если включина опция проверки самопересечение 
         if (selfIntersection == true)
             // Проверка на самопересечение
-            if (this.isSelfIntersection(snake, direction))
+            if (this._isSelfIntersection(snake, direction))
                 return;
 
         // Меняем змейки направление
@@ -163,9 +165,26 @@ class Game
         // Если включина опция проверки телепорта
         if (teleport === true)
             // Если выходит за границы, то телепортируем соответственно в начало или конец
-            newHead = this.setTeleportSnake(snake, newHead);
+            newHead = this._setTeleportSnake(snake, newHead);
     
         snake.shiftTail();       // Удаляем первый элемент змейки
         snake.pushTail(newHead); // Добавляем новый элемент змейке
+        this._checkGrowth(state);
+    }
+
+    addNewFood(state)
+    {
+        return addNewFood(state, this._field);
+    }
+
+    _checkGrowth(state)
+    {
+        const {snake, food: {coords}} = state;
+        const headSnake  = snake.getHead();
+
+        if (coords.x === headSnake.x && coords.y === headSnake.y)
+        {
+            state.food.did = true;
+        }
     }
 };

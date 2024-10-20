@@ -85,4 +85,14 @@ class Field
     {
         return this._marginOnY;
     }
+
+    getAmountCellsOnX()
+    {
+        return this._width / this._widthCell;
+    }
+
+    getAmountCellsOnY()
+    {
+        return this._heigth / this._heigthCell;
+    }
 };
