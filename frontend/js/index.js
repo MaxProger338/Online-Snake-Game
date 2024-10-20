@@ -3,28 +3,11 @@
 function onload() 
 {
     console.log('Game loaded');
-
-    const game = new Game(
-        new Field(
-            document.getElementById('canvas'), 
-            settings.width, 
-            settings.heigth, 
-            settings.cellWidth, 
-            settings.cellHeight, 
-            settings.cellMarginOnX,  
-            settings.cellMarginOnY
-        ),
-        {
-            tailColor: settings.colors.snakeBody,
-            headColor: settings.colors.snakeHead,
-            foodColor: settings.colors.food,
-            backgroundCellColor: settings.colors.backgroundCell,
-            wallColor: settings.colors.wall
-        }
-    );
-
+    
     let state = stateGlobal;
+    let field = fieldGlobal;
 
+    const game = new Game(field);
     game.renderGame(state);
 
     let startTime   = 0,

@@ -3,22 +3,13 @@
 class Game
 {
     _field  = null;
-    _colors = null;
 
-    constructor(field, {tailColor, headColor, foodColor, backgroundCellColor, wallColor})
+    constructor(field)
     {
-        if (
-            typeof field               !== 'object' ||
-            typeof tailColor           !== 'string' ||
-            typeof headColor           !== 'string' ||
-            typeof foodColor           !== 'string' ||
-            typeof backgroundCellColor !== 'string' ||
-            typeof wallColor           !== 'string'
-        )
+        if (typeof field !== 'object')
             throw new TypeError('Invalid arguments types');
 
         this._field  = field;
-        this._colors = {tailColor, headColor, foodColor, backgroundCellColor, wallColor};
     }
 
     renderCell(x, y, color)
@@ -44,22 +35,24 @@ class Game
             for (let x = 0; x < this._field.getWidth() / this._field.getWidthCell(); x++)
             {
                 // Рисуем фон
-                let color = this._colors.backgroundCellColor;
+                let color = this._field.getColors().backgroundCellColor;
                 
                 // Рисуем еду
                 if (state.foods.coords.x == x && state.foods.coords.y == y)
-                    color = this._colors.foodColor;
+                    color = this._field.getColors().foodColor;
                     
                 // Рисуем Змейку
                 state.snake.getTail().forEach(tail => {
                     if (tail.x === x && tail.y === y)
-                        color = tail.head === true ? this._colors.headColor : this._colors.tailColor;
+                        color = tail.head === true ? 
+                            this._field.getColors().headColor : 
+                            this._field.getColors().tailColor;
                 });
                     
                 // Рисуем Стену
                 state.maps[`map${state.level}`].coords.forEach((coords) => {
                     if (coords.x === x && coords.y === y)
-                        color = this._colors.wallColor;
+                        color = this._field.getColors().wallColor;
                 });
 
                 this.renderCell(x, y, color);
