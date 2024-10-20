@@ -122,7 +122,17 @@ class Game
     }
 
     // Перемещаем змейку
-    moveSnake(state, direction=state.snake.getDirection(), moveSnake = true,teleport = true, selfIntersection = true)
+    moveSnake(
+        state, 
+        direction=state.snake.getDirection(), 
+        moveSnake = true, 
+        teleport = true, 
+        selfIntersection = true, 
+        checkGrowth = true, 
+        teleportFood = true,
+        lengthenTail = true,
+        speedCoefficient = -10
+    )
     {
         let snake = state.snake;
 
@@ -166,10 +176,17 @@ class Game
         if (teleport === true)
             // Если выходит за границы, то телепортируем соответственно в начало или конец
             newHead = this._setTeleportSnake(snake, newHead);
+
+        if (this._getCollisionSnake(state, newHead))
+            return false;
     
-        snake.shiftTail();       // Удаляем первый элемент змейки
-        snake.pushTail(newHead); // Добавляем новый элемент змейке
-        this._checkGrowth(state);
+        state.lastTailPosition = snake.shiftTail();  // Удаляем первый элемент змейки
+        snake.pushTail(newHead);                     // Добавляем новый элемент змейке
+
+        if (checkGrowth === true)
+            this._checkGrowth(state, teleportFood, lengthenTail, speedCoefficient);
+
+        return true;
     }
 
     addNewFood(state)
@@ -177,14 +194,47 @@ class Game
         return addNewFood(state, this._field);
     }
 
-    _checkGrowth(state)
+    _checkGrowth(state, teleportFood = true, lengthenTail = true, speedCoefficient = -1)
     {
         const {snake, food: {coords}} = state;
         const headSnake  = snake.getHead();
 
-        if (coords.x === headSnake.x && coords.y === headSnake.y)
+        if (headSnake.x === coords.x && headSnake.y === coords.y)
         {
-            state.food.did = true;
+            if (teleportFood === true)
+                state.food.did = true;
+
+            if (lengthenTail === true)
+                snake.unshiftTail(state.lastTailPosition);
+
+            state.speed += speedCoefficient;
         }
+    }
+
+    _getCollisionSnake(state, headSnake, handleCollisionWithSnake = true, handleCollisionWithWall = true)
+    {
+        const snake = state.snake;
+        const tail  = snake.getTail();
+        const map   = state.maps[`map${state.level}`];
+
+        if (handleCollisionWithSnake === true)
+        {
+            for (let i = 0; i < tail.length; i++)
+            {
+                if (headSnake.x === tail[i].x && headSnake.y === tail[i].y)
+                    return true;
+            }
+        }
+
+        if (handleCollisionWithWall === true)
+        {
+            for (let i = 0; i < map.coords.length; i++)
+            {
+                if (headSnake.x === map.coords[i].x && headSnake.y === map.coords[i].y)
+                    return true;
+            }
+        }
+
+        return false;
     }
 };

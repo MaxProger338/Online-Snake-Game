@@ -19,10 +19,15 @@ function onload()
 
         currentTime = Date.now();
 
-        if (currentTime - startTime > 100)
+        if (currentTime - startTime > state.speed)
         {
             startTime = currentTime;
-            game.moveSnake(state);
+            if (game.moveSnake(state) === true)
+            {
+                console.log('Game over');
+                game.renderGame(state);
+                return;
+            }
             game.addNewFood(state);
             game.renderGame(state);
         }

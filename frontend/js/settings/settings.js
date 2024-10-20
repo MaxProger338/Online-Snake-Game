@@ -1,11 +1,13 @@
-const width = 600;
-const height = 600;
+const width            = 600;
+const height           = 600;
 
-const cellWidth = 30;
-const cellHeight = 30;
+const cellWidth        = 30;
+const cellHeight       = 30;
 
-const cellMarginOnX = 0;
-const cellMarginOnY = 0;
+const cellMarginOnX    = 0;
+const cellMarginOnY    = 0;
+
+const speedCoefficient = 10;
 
 const colors = {
     snakeBody: '#00dd00',

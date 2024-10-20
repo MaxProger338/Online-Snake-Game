@@ -8,11 +8,13 @@ const stateGlobal = {
         ],
         'down'
     ),
+    speed: 200,
+    lastTailPosition: {},
     food: {
         did: true,
         coords: {}
     },
-    level: 2,
+    level: 4,
     maps: {
         'map1': map1,
         'map2': map2,

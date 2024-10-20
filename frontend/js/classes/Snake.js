@@ -65,7 +65,7 @@ class Snake
 
     shiftTail()
     {
-        this._tail.shift();
+        return this._tail.shift();
     }
     
     pushTail(tail)
@@ -85,5 +85,13 @@ class Snake
         tail.head = true;
         // Добавляем новую голову
         this._tail.push(tail);
+    }
+
+    unshiftTail(tail)
+    {
+        if (typeof tail !== 'object')
+            throw new TypeError('Invalid argument type');
+
+        this._tail.unshift(tail);
     }
 }
